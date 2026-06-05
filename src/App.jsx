@@ -92,14 +92,9 @@ export default function App() {
       setResps((rs || []).map(r => r.nome));
       setCategorias((cats || []).map(c => c.nome));
 
-      // PIN sincronizado com Supabase
-      try {
-        const { data: pinRows } = await supabase
-.from("configuracoes")
-.select("valor")
-.eq("chave", "pin");
-if (pinRows && pinRows.length > 0) setPin(pinRows[pinRows.length - 1].valor);
-} catch (_) {}
+      // PIN salvo em localStorage (não é dado crítico)
+      const savedPin = localStorage.getItem("est-pin");
+      if (savedPin) setPin(savedPin);
 
       setLoaded(true);
     };
@@ -107,22 +102,8 @@ if (pinRows && pinRows.length > 0) setPin(pinRows[pinRows.length - 1].valor);
   }, []);
 
   // ── PIN ───────────────────────────────────────────────────
-  const savePin = async (p) => {
-const { error: updErr, count } = await supabase
-.from("configuracoes")
-.update({ valor: p })
-.eq("chave", "pin")
-.select();
-if (updErr) throw new Error("Erro ao atualizar PIN: " + updErr.message);
-if (!count || count === 0) {
-const { error: insErr } = await supabase
-.from("configuracoes")
-.insert({ chave: "pin", valor: p });
-if (insErr) throw new Error("Erro ao inserir PIN: " + insErr.message);
-}
-setPin(p);
-};
-const askPin = (fn) => { setPinTarget(() => fn); setPinInput(""); setPinError(""); setShowPinGate(true); };
+  const savePin = (p) => { setPin(p); localStorage.setItem("est-pin", p); };
+  const askPin = (fn) => { setPinTarget(() => fn); setPinInput(""); setPinError(""); setShowPinGate(true); };
   const confirmPin = () => {
     if (pinInput === pin) { setShowPinGate(false); pinTarget && pinTarget(); }
     else { setPinError("PIN incorreto"); setPinInput(""); }
@@ -150,9 +131,9 @@ const askPin = (fn) => { setPinTarget(() => fn); setPinInput(""); setPinError(""
       } else {
         if (!window.jsQR) {
           const s = document.createElement("script");
-          s.src = "https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js";
+          s.src = "https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js";
           document.head.appendChild(s);
-          await new Promise((res, rej) => { s.onload = res; s.onerror = rej; });
+          await new Promise(res => { s.onload = res; });
         }
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
@@ -181,7 +162,7 @@ const askPin = (fn) => { setPinTarget(() => fn); setPinInput(""); setPinError(""
   const mvStep1Next = () => {
     setMvError("");
     const code = mvProdInput.toUpperCase().trim();
-    if (!validCode(code)) { setMvError("Código inválido. Use o formato ECXXXXX"); return; }
+    if (!validCode(code)) { setMvError("Código inválido. Use o formato EC + 3 a 5 números"); return; }
     const prod = produtos.find(p => p.code === code);
     if (!prod) { setMvError("Produto não encontrado"); return; }
     setMvProdObj(prod); setMvStep(2);
@@ -228,7 +209,7 @@ const askPin = (fn) => { setPinTarget(() => fn); setPinInput(""); setPinError(""
 
   const scanStep1 = () => startScan((val) => {
     const code = val.toUpperCase();
-    if (!validCode(code)) { setMvError("QR inválido: esperado ECXXXXX"); return; }
+    if (!validCode(code)) { setMvError("QR inválido: esperado EC + 3 a 5 números"); return; }
     const prod = produtos.find(p => p.code === code);
     if (!prod) { setMvError("Produto não encontrado: " + code); return; }
     setMvProdInput(code); setMvProdObj(prod); setMvStep(2);
@@ -246,7 +227,7 @@ const askPin = (fn) => { setPinTarget(() => fn); setPinInput(""); setPinError(""
   const saveProd = async () => {
     setApError("");
     const code = apCode.toUpperCase().trim();
-    if (!validCode(code))                           { setApError("Código deve ser ECXXXXX"); return; }
+    if (!validCode(code))                           { setApError("Código deve ser EC + 3 a 5 números"); return; }
     if (!apLocal)                                   { setApError("Selecione o local de armazenamento"); return; }
     if (!apEdit && produtos.find(p => p.code === code)) { setApError("Produto já cadastrado"); return; }
 
@@ -348,18 +329,12 @@ const askPin = (fn) => { setPinTarget(() => fn); setPinInput(""); setPinError(""
   };
 
   // ── Admin – PIN ───────────────────────────────────────────
-  const changePin = async () => {
-if (ep1.length < 4) { setAdminMsg("PIN deve ter pelo menos 4 dígitos."); return; }
-if (ep1 !== ep2) { setAdminMsg("PINs não coincidem."); return; }
-try {
-await savePin(ep1);
-setEp1(""); setEp2("");
-setAdminMsg("PIN alterado com sucesso!"); setTimeout(() => setAdminMsg(""), 3000);
-} catch (e) {
-setAdminMsg("Erro ao salvar PIN: " + (e.message || "verifique as permissões no Supabase"));
-}
-};
-
+  const changePin = () => {
+    if (ep1.length < 4) { setAdminMsg("PIN deve ter pelo menos 4 dígitos."); return; }
+    if (ep1 !== ep2)    { setAdminMsg("PINs não coincidem."); return; }
+    savePin(ep1); setEp1(""); setEp2("");
+    setAdminMsg("PIN alterado com sucesso!"); setTimeout(() => setAdminMsg(""), 3000);
+  };
 
   // ── Filtered list ─────────────────────────────────────────
   const filtered = produtos.filter(p =>
@@ -382,7 +357,7 @@ setAdminMsg("Erro ao salvar PIN: " + (e.message || "verifique as permissões no 
       <div style={{ borderBottom: "1px solid #2a2a35", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
           <div style={{ fontSize: 10, letterSpacing: 4, color: "#5a8a6a", textTransform: "uppercase", marginBottom: 3 }}>Sistema de Estoque</div>
-          <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: 1 }}>Estoque de Tubo Padrão</div>
+          <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: 1 }}>Gestão de Tubo Padrão</div>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <span style={S.tag("#5a8a6a")}>{produtos.length} produto{produtos.length !== 1 ? "s" : ""}</span>
@@ -490,7 +465,7 @@ setAdminMsg("Erro ao salvar PIN: " + (e.message || "verifique as permissões no 
           <div style={{ color: "#888", fontSize: 12, marginBottom: 12 }}>Escaneie o QR Code do produto ou digite o código manualmente.</div>
           <Lbl>Código do produto *</Lbl>
           <input value={mvProdInput} onChange={e => setMvProdInput(e.target.value.toUpperCase())}
-            placeholder="EC00001" maxLength={7} style={S.input} onKeyDown={e => e.key === "Enter" && mvStep1Next()} />
+            placeholder="EC001" maxLength={7} style={S.input} onKeyDown={e => e.key === "Enter" && mvStep1Next()} />
           {mvError && <Err>{mvError}</Err>}
           <video ref={videoRef} style={{ width: "100%", borderRadius: 8, background: "#000", display: mvScanActive ? "block" : "none", maxHeight: 220, marginTop: 12 }} playsInline muted />
           {!mvScanActive
@@ -566,7 +541,7 @@ setAdminMsg("Erro ao salvar PIN: " + (e.message || "verifique as permissões no 
               {apEdit ? "✏️ Editar produto" : "➕ Novo produto"}
             </div>
             <Lbl>Código *</Lbl>
-            <input value={apCode} onChange={e => setApCode(e.target.value)} placeholder="EC00001" maxLength={7} style={{ ...S.input }} disabled={!!apEdit} />
+            <input value={apCode} onChange={e => setApCode(e.target.value)} placeholder="EC001" maxLength={7} style={{ ...S.input }} disabled={!!apEdit} />
             <Lbl>Descrição (opcional)</Lbl>
             <input value={apName} onChange={e => setApName(e.target.value)} placeholder="Ex: 244.48 x 13.84" style={S.input} />
             <Lbl>Categoria do padrão (opcional)</Lbl>
