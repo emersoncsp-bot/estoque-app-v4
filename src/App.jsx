@@ -114,7 +114,7 @@ export default function App() {
   const savePin = async (p) => {
     setPin(p);
     localStorage.setItem("est-pin", p);
-    await supabase.from("configuracoes").upsert({ chave: "pin", valor: p });
+    await supabase.from("configuracoes").upsert({ chave: "pin", valor: p }, { onConflict: "chave" });
   };
   const askPin = (fn) => { setPinTarget(() => fn); setPinInput(""); setPinError(""); setShowPinGate(true); };
   const confirmPin = () => {
