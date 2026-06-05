@@ -356,8 +356,8 @@ export default function App() {
       {/* Header */}
       <div style={{ borderBottom: "1px solid #2a2a35", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <div style={{ fontSize: 10, letterSpacing: 4, color: "#5a8a6a", textTransform: "uppercase", marginBottom: 3 }}>Sistema de Estoque</div>
-          <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: 1 }}>Gestão de Tubo Padrão</div>
+          <div style={{ fontSize: 10, letterSpacing: 4, color: "#5a8a6a", textTransform: "uppercase", marginBottom: 3 }}>Vallourec</div>
+          <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: 1 }}>Estoque de Tubo Padrão</div>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <span style={S.tag("#5a8a6a")}>{produtos.length} produto{produtos.length !== 1 ? "s" : ""}</span>
@@ -377,7 +377,7 @@ export default function App() {
             borderBottom: tab === t ? "2px solid #5a8a6a" : "2px solid transparent",
             textTransform: "uppercase", fontFamily: "inherit", fontWeight: tab === t ? 700 : 400,
           }}>
-            {t === "estoque" ? "📋 LISTA DE PADRÕES" : "📋 Histórico"}
+            {t === "estoque" ? "📋 LISTA DE PADRÕES" : "📋 HISTÓRICO DE MOVIMENTAÇÕES"}
           </button>
         ))}
       </div>
