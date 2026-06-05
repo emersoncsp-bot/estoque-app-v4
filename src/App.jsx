@@ -108,11 +108,13 @@ if (pinRows && pinRows.length > 0) setPin(pinRows[pinRows.length - 1].valor);
 
   // ── PIN ───────────────────────────────────────────────────
   const savePin = async (p) => {
-    setPin(p);
-    await supabase.from("configuracoes").delete().eq("chave", "pin");
-await supabase.from("configuracoes").insert({ chave: "pin", valor: p });
-  };
-  const askPin = (fn) => { setPinTarget(() => fn); setPinInput(""); setPinError(""); setShowPinGate(true); };
+const { error: delErr } = await supabase.from("configuracoes").delete().eq("chave", "pin");
+if (delErr) throw new Error("Erro ao limpar PIN: " + delErr.message);
+const { error: insErr } = await supabase.from("configuracoes").insert({ chave: "pin", valor: p });
+if (insErr) throw new Error("Erro ao inserir PIN: " + insErr.message);
+setPin(p);
+};
+const askPin = (fn) => { setPinTarget(() => fn); setPinInput(""); setPinError(""); setShowPinGate(true); };
   const confirmPin = () => {
     if (pinInput === pin) { setShowPinGate(false); pinTarget && pinTarget(); }
     else { setPinError("PIN incorreto"); setPinInput(""); }
@@ -339,11 +341,17 @@ await supabase.from("configuracoes").insert({ chave: "pin", valor: p });
 
   // ── Admin – PIN ───────────────────────────────────────────
   const changePin = async () => {
-    if (ep1.length < 4) { setAdminMsg("PIN deve ter pelo menos 4 dígitos."); return; }
-    if (ep1 !== ep2)    { setAdminMsg("PINs não coincidem."); return; }
-    await savePin(ep1); setEp1(""); setEp2("");
-    setAdminMsg("PIN alterado com sucesso!"); setTimeout(() => setAdminMsg(""), 3000);
-  };
+if (ep1.length < 4) { setAdminMsg("PIN deve ter pelo menos 4 dígitos."); return; }
+if (ep1 !== ep2) { setAdminMsg("PINs não coincidem."); return; }
+try {
+await savePin(ep1);
+setEp1(""); setEp2("");
+setAdminMsg("PIN alterado com sucesso!"); setTimeout(() => setAdminMsg(""), 3000);
+} catch (e) {
+setAdminMsg("Erro ao salvar PIN: " + (e.message || "verifique as permissões no Supabase"));
+}
+};
+
 
   // ── Filtered list ─────────────────────────────────────────
   const filtered = produtos.filter(p =>
