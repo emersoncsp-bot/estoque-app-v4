@@ -13,7 +13,7 @@ const fmt = (iso) => {
   const d = new Date(iso);
   return d.toLocaleDateString("pt-BR") + " " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
 };
-const validCode = (c) => /^EC\d{5}$/.test(c.toUpperCase());
+const validCode = (c) => /^EC\d{3,5}$/.test(c.toUpperCase());
 
 const S = {
   input: { width: "100%", background: "#0f1117", border: "1px solid #2a2a35", borderRadius: 7, padding: "9px 13px", color: "#e8e6e0", fontFamily: "'DM Mono','Courier New',monospace", fontSize: 13, outline: "none", boxSizing: "border-box" },
