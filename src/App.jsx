@@ -108,10 +108,18 @@ if (pinRows && pinRows.length > 0) setPin(pinRows[pinRows.length - 1].valor);
 
   // ── PIN ───────────────────────────────────────────────────
   const savePin = async (p) => {
-const { error: delErr } = await supabase.from("configuracoes").delete().eq("chave", "pin");
-if (delErr) throw new Error("Erro ao limpar PIN: " + delErr.message);
-const { error: insErr } = await supabase.from("configuracoes").insert({ chave: "pin", valor: p });
+const { error: updErr, count } = await supabase
+.from("configuracoes")
+.update({ valor: p })
+.eq("chave", "pin")
+.select();
+if (updErr) throw new Error("Erro ao atualizar PIN: " + updErr.message);
+if (!count || count === 0) {
+const { error: insErr } = await supabase
+.from("configuracoes")
+.insert({ chave: "pin", valor: p });
 if (insErr) throw new Error("Erro ao inserir PIN: " + insErr.message);
+}
 setPin(p);
 };
 const askPin = (fn) => { setPinTarget(() => fn); setPinInput(""); setPinError(""); setShowPinGate(true); };
