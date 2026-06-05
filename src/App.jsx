@@ -131,9 +131,9 @@ export default function App() {
       } else {
         if (!window.jsQR) {
           const s = document.createElement("script");
-          s.src = "https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js";
+          s.src = "https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js";
           document.head.appendChild(s);
-          await new Promise(res => { s.onload = res; });
+          await new Promise((res, rej) => { s.onload = res; s.onerror = rej; });
         }
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
