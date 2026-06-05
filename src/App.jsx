@@ -94,16 +94,12 @@ export default function App() {
 
       // PIN sincronizado com Supabase
       try {
-        const { data: pinData } = await supabase
-          .from("configuracoes")
-          .select("valor")
-          .eq("chave", "pin")
-          .single();
-        if (pinData?.valor) setPin(pinData.valor);
-      } catch (_) {
-        const savedPin = localStorage.getItem("est-pin");
-        if (savedPin) setPin(savedPin);
-      }
+        const { data: pinRows } = await supabase
+.from("configuracoes")
+.select("valor")
+.eq("chave", "pin");
+if (pinRows && pinRows.length > 0) setPin(pinRows[pinRows.length - 1].valor);
+} catch (_) {}
 
       setLoaded(true);
     };
@@ -113,8 +109,8 @@ export default function App() {
   // ── PIN ───────────────────────────────────────────────────
   const savePin = async (p) => {
     setPin(p);
-    localStorage.setItem("est-pin", p);
-    await supabase.from("configuracoes").upsert({ chave: "pin", valor: p }, { onConflict: "chave" });
+    await supabase.from("configuracoes").delete().eq("chave", "pin");
+await supabase.from("configuracoes").insert({ chave: "pin", valor: p });
   };
   const askPin = (fn) => { setPinTarget(() => fn); setPinInput(""); setPinError(""); setShowPinGate(true); };
   const confirmPin = () => {
