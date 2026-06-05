@@ -7,7 +7,7 @@ const supabase = createClient(
   import.meta.env.VITE_SUPABASE_ANON_KEY
 );
 
-const DEFAULT_PIN = "1234";
+const DEFAULT_PIN = "1921";
 
 const fmt = (iso) => {
   const d = new Date(iso);
