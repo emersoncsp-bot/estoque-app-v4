@@ -16,7 +16,7 @@ const fmt = (iso) => {
 const validCode = (c) => /^EC\d{5}$/.test(c.toUpperCase());
 
 const S = {
-  input: { width: "100%", background: "#0f1117", border: "1px solid #2a2a35", borderRadius: 7, padding: "9px 13px", color: "#e8e6e0", fontFamily: "Calibri, sans-serif", fontSize: 13, outline: "none", boxSizing: "border-box" },
+  input: { width: "100%", background: "#0f1117", border: "1px solid #2a2a35", borderRadius: 7, padding: "9px 13px", color: "#e8e6e0", fontFamily: "'DM Mono','Courier New',monospace", fontSize: 13, outline: "none", boxSizing: "border-box" },
   tag: (color) => ({ fontSize: 12, padding: "3px 10px", borderRadius: 6, border: `1px solid ${color}44`, background: `${color}18`, color, display: "inline-block" }),
 };
 
@@ -92,9 +92,18 @@ export default function App() {
       setResps((rs || []).map(r => r.nome));
       setCategorias((cats || []).map(c => c.nome));
 
-      // PIN salvo em localStorage (não é dado crítico)
-      const savedPin = localStorage.getItem("est-pin");
-      if (savedPin) setPin(savedPin);
+      // PIN sincronizado com Supabase
+      try {
+        const { data: pinData } = await supabase
+          .from("configuracoes")
+          .select("valor")
+          .eq("chave", "pin")
+          .single();
+        if (pinData?.valor) setPin(pinData.valor);
+      } catch (_) {
+        const savedPin = localStorage.getItem("est-pin");
+        if (savedPin) setPin(savedPin);
+      }
 
       setLoaded(true);
     };
@@ -102,7 +111,11 @@ export default function App() {
   }, []);
 
   // ── PIN ───────────────────────────────────────────────────
-  const savePin = (p) => { setPin(p); localStorage.setItem("est-pin", p); };
+  const savePin = async (p) => {
+    setPin(p);
+    localStorage.setItem("est-pin", p);
+    await supabase.from("configuracoes").upsert({ chave: "pin", valor: p });
+  };
   const askPin = (fn) => { setPinTarget(() => fn); setPinInput(""); setPinError(""); setShowPinGate(true); };
   const confirmPin = () => {
     if (pinInput === pin) { setShowPinGate(false); pinTarget && pinTarget(); }
@@ -329,10 +342,10 @@ export default function App() {
   };
 
   // ── Admin – PIN ───────────────────────────────────────────
-  const changePin = () => {
+  const changePin = async () => {
     if (ep1.length < 4) { setAdminMsg("PIN deve ter pelo menos 4 dígitos."); return; }
     if (ep1 !== ep2)    { setAdminMsg("PINs não coincidem."); return; }
-    savePin(ep1); setEp1(""); setEp2("");
+    await savePin(ep1); setEp1(""); setEp2("");
     setAdminMsg("PIN alterado com sucesso!"); setTimeout(() => setAdminMsg(""), 3000);
   };
 
@@ -340,16 +353,18 @@ export default function App() {
   const filtered = produtos.filter(p =>
     p.code.includes(search.toUpperCase()) ||
     (p.name || "").toLowerCase().includes(search.toLowerCase()) ||
-fontFamily: "Calibri, sans-serif"  );
+    (p.shelf || "").toLowerCase().includes(search.toLowerCase())
+  );
 
-fontFamily: "Calibri, sans-serif"    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "#0f1117", color: "#f0f0f0", fontFamily: "Calibri, sans-serif" }}>
+  if (!loaded) return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "#0f1117", color: "#f0f0f0", fontFamily: "monospace" }}>
       Carregando…
     </div>
   );
 
   // ══════════════════════════════════════════════════════════
   return (
-    <div style={{ minHeight: "100vh", background: "#0f1117", color: "#e8e6e0", fontFamily: "Calibri, sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "#0f1117", color: "#e8e6e0", fontFamily: "'DM Mono','Courier New',monospace" }}>
 
       {/* Header */}
       <div style={{ borderBottom: "1px solid #2a2a35", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -684,7 +699,7 @@ function IconBtn({ onClick, color, children, title }) {
 }
 function Select({ value, onChange, placeholder, options }) {
   return (
-    <select value={value} onChange={onChange} style={{ width: "100%", background: "#0f1117", border: "1px solid #2a2a35", borderRadius: 7, padding: "9px 13px", color: "#e8e6e0", fontFamily: "Calibri, sans-serif", fontSize: 13, outline: "none", boxSizing: "border-box", appearance: "none", cursor: "pointer" }}>
+    <select value={value} onChange={onChange} style={{ width: "100%", background: "#0f1117", border: "1px solid #2a2a35", borderRadius: 7, padding: "9px 13px", color: "#e8e6e0", fontFamily: "'DM Mono','Courier New',monospace", fontSize: 13, outline: "none", boxSizing: "border-box", appearance: "none", cursor: "pointer" }}>
       <option value="">{placeholder}</option>
       {options.map(o => <option key={o} value={o}>{o}</option>)}
     </select>
