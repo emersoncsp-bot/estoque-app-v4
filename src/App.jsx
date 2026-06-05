@@ -355,7 +355,7 @@ fontFamily: "Calibri, sans-serif"    <div style={{ display: "flex", alignItems: 
       <div style={{ borderBottom: "1px solid #2a2a35", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
           <div style={{ fontSize: 10, letterSpacing: 4, color: "#5a8a6a", textTransform: "uppercase", marginBottom: 3 }}>Sistema de Estoque</div>
-          <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: 1 }}>Gestão de Tubo Padrão</div>
+          <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: 1 }}>Estoque de Tubo Padrão</div>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <span style={S.tag("#5a8a6a")}>{produtos.length} produto{produtos.length !== 1 ? "s" : ""}</span>
