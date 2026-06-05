@@ -360,7 +360,7 @@ export default function App() {
           <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: 1 }}>Estoque de Tubo Padrão</div>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <span style={S.tag("#5a8a6a")}>{produtos.length} produto{produtos.length !== 1 ? "s" : ""}</span>
+          <span style={S.tag("#5a8a6a")}>{produtos.length} Padrões cadastrados</span>
           <button onClick={() => askPin(() => { setAdminMsg(""); setAdminTab("produtos"); startAddProd(); setShowAdmin(true); })}
             style={{ background: "#1e2028", color: "#aaa", border: "1px solid #2a2a35", borderRadius: 7, padding: "6px 14px", cursor: "pointer", fontFamily: "inherit", fontSize: 12 }}>
             ⚙ Admin
