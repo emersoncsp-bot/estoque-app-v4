@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
+import jsQR from "jsqr";
 
 // ── Supabase client ────────────────────────────────────────────
 const supabase = createClient(
@@ -155,15 +156,7 @@ const savePin = async (p) => {
         } catch (_) {}
       }, 300);
     } else {
-      if (!window.jsQR) {
-        await new Promise((res, rej) => { // ← Bug 3 corrigido: trata erro de carga
-          const s = document.createElement("script");
-          s.src = "https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js";
-          s.onload = res;
-          s.onerror = () => rej(new Error("Falha ao carregar leitor QR"));
-          document.head.appendChild(s);
-        });
-      }
+      
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
       scanTimer.current = setInterval(() => {
@@ -172,7 +165,7 @@ const savePin = async (p) => {
         canvas.height = videoRef.current.videoHeight;
         ctx.drawImage(videoRef.current, 0, 0);
         const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const code = window.jsQR(img.data, img.width, img.height);
+        const code = jsQR(img.data, img.width, img.height);
         if (code) handle(code.data);
       }, 300);
     }
