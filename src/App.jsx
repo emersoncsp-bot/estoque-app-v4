@@ -477,13 +477,17 @@ export default function App() {
             <div style={{ fontFamily: FS, fontSize: 19, fontWeight: 700, letterSpacing: 0.2, color: C.txt }}>Estoque de Tubo Padrão</div>
           </div>
         </div>
-        <span style={{ fontFamily: FM, fontSize: 10.5, letterSpacing: 1, color: C.muted2, border: `1px solid ${C.line}`, borderRadius: 8, padding: "7px 12px", whiteSpace: "nowrap" }}>
-          Desenvolvido por Emerson Santos
-        </span>
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <span style={S.tag(C.accent)}>{produtos.length} padrões cadastrados</span>
+          <button className="btn-ghost" onClick={() => askPin(() => { setAdminMsg(""); setAdminTab("produtos"); startAddProd(); setShowAdmin(true); })}
+            style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "transparent", color: C.muted, border: `1px solid ${C.line}`, borderRadius: 9, padding: "8px 14px", cursor: "pointer", fontFamily: FS, fontSize: 12.5, fontWeight: 500 }}>
+            <Icon name="sliders" size={15} /> Admin
+          </button>
+        </div>
       </header>
 
       {/* Tabs */}
-      <div style={{ display: "flex", alignItems: "center", borderBottom: `1px solid ${C.line}`, padding: "0 28px", gap: 4, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", borderBottom: `1px solid ${C.line}`, padding: "0 28px", gap: 4 }}>
         {["estoque", "historico"].map(t => {
           const on = tab === t;
           return (
@@ -499,13 +503,6 @@ export default function App() {
             </button>
           );
         })}
-        <div style={{ display: "flex", gap: 10, alignItems: "center", marginLeft: "auto" }}>
-          <span style={S.tag(C.accent)}>{produtos.length} padrões cadastrados</span>
-          <button className="btn-ghost" onClick={() => askPin(() => { setAdminMsg(""); setAdminTab("produtos"); startAddProd(); setShowAdmin(true); })}
-            style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "transparent", color: C.muted, border: `1px solid ${C.line}`, borderRadius: 9, padding: "8px 14px", cursor: "pointer", fontFamily: FS, fontSize: 12.5, fontWeight: 500 }}>
-            <Icon name="sliders" size={15} /> Admin
-          </button>
-        </div>
       </div>
 
       {/* Content */}
