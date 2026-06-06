@@ -92,17 +92,35 @@ export default function App() {
       setResps((rs || []).map(r => r.nome));
       setCategorias((cats || []).map(c => c.nome));
 
-      // PIN salvo em localStorage (não é dado crítico)
-      const savedPin = localStorage.getItem("est-pin");
-      if (savedPin) setPin(savedPin);
+// PIN lido do Supabase (sincronizado entre dispositivos)
+const { data: configPin } = await supabase
+  .from("configuracoes")
+  .select("valor")
+  .eq("chave", "pin")
+  .maybeSingle();
 
+if (configPin?.valor) {
+  setPin(configPin.valor);
+  localStorage.setItem("est-pin", configPin.valor);
+} else {
+  const savedPin = localStorage.getItem("est-pin");
+  if (savedPin) setPin(savedPin);
+}
+     
       setLoaded(true);
     };
     load();
   }, []);
 
   // ── PIN ───────────────────────────────────────────────────
-  const savePin = (p) => { setPin(p); localStorage.setItem("est-pin", p); };
+const savePin = async (p) => {
+  setPin(p);
+  localStorage.setItem("est-pin", p);
+  await supabase
+    .from("configuracoes")
+    .upsert({ chave: "pin", valor: p }, { onConflict: "chave" });
+};
+  
   const askPin = (fn) => { setPinTarget(() => fn); setPinInput(""); setPinError(""); setShowPinGate(true); };
   const confirmPin = () => {
     if (pinInput === pin) { setShowPinGate(false); pinTarget && pinTarget(); }
@@ -329,13 +347,13 @@ export default function App() {
   };
 
   // ── Admin – PIN ───────────────────────────────────────────
-  const changePin = () => {
-    if (ep1.length < 4) { setAdminMsg("PIN deve ter pelo menos 4 dígitos."); return; }
-    if (ep1 !== ep2)    { setAdminMsg("PINs não coincidem."); return; }
-    savePin(ep1); setEp1(""); setEp2("");
-    setAdminMsg("PIN alterado com sucesso!"); setTimeout(() => setAdminMsg(""), 3000);
-  };
-
+const changePin = async () => {
+  if (ep1.length < 4) { setAdminMsg("PIN deve ter pelo menos 4 dígitos."); return; }
+  if (ep1 !== ep2)    { setAdminMsg("PINs não coincidem."); return; }
+  await savePin(ep1); setEp1(""); setEp2("");
+  setAdminMsg("PIN alterado com sucesso!"); setTimeout(() => setAdminMsg(""), 3000);
+};
+  
   // ── Filtered list ─────────────────────────────────────────
   const filtered = produtos.filter(p =>
     p.code.includes(search.toUpperCase()) ||
