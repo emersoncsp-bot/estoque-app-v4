@@ -135,37 +135,51 @@ const savePin = async (p) => {
   };
 
   const startScan = async (onResult) => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-      streamRef.current = stream;
-      if (videoRef.current) { videoRef.current.srcObject = stream; videoRef.current.play(); }
-      setMvScanActive(true);
-      const handle = (text) => { stopScan(); onResult(text.trim()); };
-      if ("BarcodeDetector" in window) {
-        const bd = new BarcodeDetector({ formats: ["qr_code"] });
-        scanTimer.current = setInterval(async () => {
-          try { const c = await bd.detect(videoRef.current); if (c.length > 0) handle(c[0].rawValue); } catch (_) {}
-        }, 300);
-      } else {
-        if (!window.jsQR) {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+    streamRef.current = stream;
+    if (videoRef.current) {
+      videoRef.current.srcObject = stream;
+      await videoRef.current.play(); // ← Bug 1 corrigido: aguarda o vídeo iniciar
+    }
+    setMvScanActive(true);
+    const handle = (text) => { stopScan(); onResult(text.trim()); };
+
+    if ("BarcodeDetector" in window) {
+      const bd = new BarcodeDetector({ formats: ["qr_code"] });
+      scanTimer.current = setInterval(async () => {
+        try {
+          if (!videoRef.current?.videoWidth) return; // ← Bug 2 corrigido
+          const c = await bd.detect(videoRef.current);
+          if (c.length > 0) handle(c[0].rawValue);
+        } catch (_) {}
+      }, 300);
+    } else {
+      if (!window.jsQR) {
+        await new Promise((res, rej) => { // ← Bug 3 corrigido: trata erro de carga
           const s = document.createElement("script");
           s.src = "https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js";
+          s.onload = res;
+          s.onerror = () => rej(new Error("Falha ao carregar leitor QR"));
           document.head.appendChild(s);
-          await new Promise(res => { s.onload = res; });
-        }
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        scanTimer.current = setInterval(() => {
-          if (!videoRef.current?.videoWidth) return;
-          canvas.width = videoRef.current.videoWidth; canvas.height = videoRef.current.videoHeight;
-          ctx.drawImage(videoRef.current, 0, 0);
-          const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const code = window.jsQR(img.data, img.width, img.height);
-          if (code) handle(code.data);
-        }, 300);
+        });
       }
-    } catch (e) { alert("Câmera indisponível: " + e.message); }
-  };
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      scanTimer.current = setInterval(() => {
+        if (!videoRef.current?.videoWidth) return;
+        canvas.width = videoRef.current.videoWidth;
+        canvas.height = videoRef.current.videoHeight;
+        ctx.drawImage(videoRef.current, 0, 0);
+        const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = window.jsQR(img.data, img.width, img.height);
+        if (code) handle(code.data);
+      }, 300);
+    }
+  } catch (e) {
+    alert("Câmera indisponível: " + e.message);
+  }
+};
 
   useEffect(() => () => stopScan(), []);
 
