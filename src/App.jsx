@@ -492,7 +492,7 @@ export default function App() {
         </div>
         <div style={{ marginLeft: "auto", display: "flex", flexDirection: "column", alignItems: "flex-start", lineHeight: 1.3 }}>
           <span style={{ fontFamily: FS, fontSize: 10.5, color: C.muted, marginBottom: 2 }}>Desenvolvido por</span>
-          <span style={{ fontFamily: FS, fontSize: 12, fontWeight: 600, letterSpacing: 0.4, color: C.accent, textTransform: "uppercase" }}>Emerson Santos</span>
+          <span style={{ fontFamily: FS, fontSize: 11, fontWeight: 600, letterSpacing: 0.4, color: C.accent, textTransform: "uppercase" }}>Emerson Santos</span>
         </div>
       </header>
 
