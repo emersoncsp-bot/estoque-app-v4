@@ -347,6 +347,8 @@ export default function App() {
     setApError("");
     const code = apCode.toUpperCase().trim();
     if (!validCode(code))                           { setApError("Código deve ser EC + 3 a 5 números"); return; }
+    if (!apName.trim())                             { setApError("Informe a descrição."); return; }
+    if (!apCat)                                     { setApError("Selecione a categoria do padrão."); return; }
     if (!apLocal)                                   { setApError("Selecione o local de armazenamento"); return; }
     if (!apEdit && produtos.find(p => p.code === code)) { setApError("Produto já cadastrado"); return; }
 
@@ -526,7 +528,7 @@ export default function App() {
       {/* ══ PÁGINA: LISTA DE PADRÕES ══ */}
       {page === "lista" && (
         <main style={{ padding: "20px 28px 32px", maxWidth: 1200, margin: "0 auto" }}>
-          <PageHead icon="list" title="Lista de padrões" onBack={() => setPage("home")} />
+          <PageHead icon="list" title="Lista de padrões" onBack={() => setPage("home")} size={23} />
 
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18, flexWrap: "wrap" }}>
             <span style={S.tag(C.accent)}>{produtos.length} padrões cadastrados</span>
@@ -558,10 +560,10 @@ export default function App() {
                     <tbody>
                       {filtered.map((p, i) => (
                         <tr key={p.code} className="row-hover" style={{ background: i % 2 === 0 ? "transparent" : "rgba(27,36,49,0.022)" }}>
-                          <td style={{ padding: "12px 14px", borderBottom: `1px solid ${C.line}`, fontFamily: FM, fontSize: 13, fontWeight: 600, color: C.accent, letterSpacing: 0.5 }}>{p.code}</td>
-                          <td style={{ padding: "12px 14px", borderBottom: `1px solid ${C.line}`, fontFamily: FM, fontSize: 13, color: C.muted }}>{p.name || <Em />}</td>
-                          <td style={{ padding: "12px 14px", borderBottom: `1px solid ${C.line}`, fontFamily: FM, fontSize: 13, color: C.muted }}>{p.category || <Em />}</td>
-                          <td style={{ padding: "12px 14px", borderBottom: `1px solid ${C.line}` }}><span style={S.tag(C.loc)}><Icon name="pin" size={12} />{p.shelf}</span></td>
+                          <td style={{ padding: "12px 14px", borderBottom: `1px solid ${C.line}`, fontFamily: FS, fontSize: 13, fontWeight: 600, color: C.accent, letterSpacing: 0.3 }}>{p.code}</td>
+                          <td style={{ padding: "12px 14px", borderBottom: `1px solid ${C.line}`, fontFamily: FS, fontSize: 13, color: C.muted }}>{p.name || <Em />}</td>
+                          <td style={{ padding: "12px 14px", borderBottom: `1px solid ${C.line}`, fontFamily: FS, fontSize: 13, color: C.muted }}>{p.category || <Em />}</td>
+                          <td style={{ padding: "12px 14px", borderBottom: `1px solid ${C.line}` }}><span style={{ ...S.tag(C.loc), fontFamily: FS }}><Icon name="pin" size={12} />{p.shelf}</span></td>
                         </tr>
                       ))}
                     </tbody>
@@ -605,7 +607,7 @@ export default function App() {
             const active = mvStep === i + 1, done = mvStep > i + 1;
             const col = done ? C.ok : active ? C.accent : C.muted2;
             return (
-              <div key={n} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "8px 0", borderRadius: 9, fontSize: 11, fontFamily: FM, letterSpacing: 0.5,
+              <div key={n} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "8px 0", borderRadius: 9, fontSize: 11, fontFamily: FS, letterSpacing: 0.5,
                 background: done ? `${C.ok}12` : active ? `${C.accent}12` : C.panel2,
                 border: `1px solid ${done ? `${C.ok}3a` : active ? `${C.accent}55` : C.line}`,
                 color: col, fontWeight: active ? 600 : 400,
@@ -702,9 +704,9 @@ export default function App() {
             </div>
             <Lbl>Código *</Lbl>
             <input value={apCode} onChange={e => setApCode(e.target.value)} placeholder="EC001" maxLength={7} style={S.input} disabled={!!apEdit} />
-            <Lbl>Descrição (opcional)</Lbl>
+            <Lbl>Descrição *</Lbl>
             <input value={apName} onChange={e => setApName(e.target.value)} placeholder="Ex: 244.48 x 13.84" style={S.input} />
-            <Lbl>Categoria do padrão (opcional)</Lbl>
+            <Lbl>Categoria do padrão *</Lbl>
             <Select value={apCat} onChange={e => setApCat(e.target.value)} placeholder="Selecione a categoria" options={categorias} />
             <Lbl>Local de armazenamento *</Lbl>
             <Select value={apLocal} onChange={e => setApLocal(e.target.value)} placeholder="Selecione o local" options={locais} />
@@ -832,7 +834,7 @@ export default function App() {
 }
 
 // ── Micro-components ──────────────────────────────────────────
-function PageHead({ icon, title, onBack }) {
+function PageHead({ icon, title, onBack, size = 20 }) {
   return (
     <div style={{ marginBottom: 22 }}>
       <button className="back-link" onClick={onBack}
@@ -840,8 +842,8 @@ function PageHead({ icon, title, onBack }) {
         <Icon name="arrowL" size={15} /> Voltar ao menu
       </button>
       <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-        <span style={{ color: C.accent, display: "flex" }}><Icon name={icon} size={21} /></span>
-        <span style={{ fontFamily: FS, fontSize: 20, fontWeight: 700, letterSpacing: 0.2, color: C.txt }}>{title}</span>
+        <span style={{ color: C.accent, display: "flex" }}><Icon name={icon} size={Math.round(size * 1.05)} /></span>
+        <span style={{ fontFamily: FS, fontSize: size, fontWeight: 700, letterSpacing: 0.2, color: C.txt }}>{title}</span>
       </div>
     </div>
   );
