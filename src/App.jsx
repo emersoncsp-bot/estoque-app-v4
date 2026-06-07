@@ -467,7 +467,7 @@ export default function App() {
       <style>{CSS}</style>
 
       {/* Header */}
-      <header style={{ borderBottom: `1px solid ${C.line}`, padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap", background: "linear-gradient(180deg, rgba(17,23,38,0.55), transparent)" }}>
+      <header style={{ borderBottom: `1px solid ${C.line}`, padding: "18px 28px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", background: "linear-gradient(180deg, rgba(17,23,38,0.55), transparent)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{ width: 42, height: 42, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(160deg, #142036, #0c1220)", border: `1px solid ${C.line2}`, color: C.accent, boxShadow: "0 0 0 1px rgba(56,189,248,0.07), 0 10px 22px -14px rgba(56,189,248,0.6)" }}>
             <Icon name="box" size={22} />
@@ -477,17 +477,18 @@ export default function App() {
             <div style={{ fontFamily: FS, fontSize: 19, fontWeight: 700, letterSpacing: 0.2, color: C.txt }}>Estoque de Tubo Padrão</div>
           </div>
         </div>
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <span style={S.tag(C.accent)}>{produtos.length} padrões cadastrados</span>
-          <button className="btn-ghost" onClick={() => askPin(() => { setAdminMsg(""); setAdminTab("produtos"); startAddProd(); setShowAdmin(true); })}
-            style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "transparent", color: C.muted, border: `1px solid ${C.line}`, borderRadius: 9, padding: "8px 14px", cursor: "pointer", fontFamily: FS, fontSize: 12.5, fontWeight: 500 }}>
-            <Icon name="sliders" size={15} /> Admin
-          </button>
-        </div>
+        <button className="btn-ghost" onClick={() => askPin(() => { setAdminMsg(""); setAdminTab("produtos"); startAddProd(); setShowAdmin(true); })}
+          style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "transparent", color: C.muted, border: `1px solid ${C.line}`, borderRadius: 9, padding: "8px 14px", cursor: "pointer", fontFamily: FS, fontSize: 12.5, fontWeight: 500 }}>
+          <Icon name="sliders" size={15} /> Admin
+        </button>
+        <span style={S.tag(C.accent)}>{produtos.length} padrões cadastrados</span>
+        <span style={{ marginLeft: "auto", fontFamily: FM, fontSize: 10.5, letterSpacing: 1, color: C.muted2, border: `1px solid ${C.line}`, borderRadius: 8, padding: "7px 12px", whiteSpace: "nowrap" }}>
+          Desenvolvido por Emerson Santos
+        </span>
       </header>
 
       {/* Tabs */}
-      <div style={{ display: "flex", borderBottom: `1px solid ${C.line}`, padding: "0 28px", gap: 4 }}>
+      <div style={{ display: "flex", alignItems: "center", borderBottom: `1px solid ${C.line}`, padding: "0 28px", gap: 4, flexWrap: "wrap" }}>
         {["estoque", "historico"].map(t => {
           const on = tab === t;
           return (
