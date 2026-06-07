@@ -28,6 +28,9 @@ const C = {
   muted2:  "#5e7088",
   accent:  "#38bdf8",
   accentD: "#0ea5e9",
+  gray:    "#6b7280",
+  grayL:   "#9aa6b8",
+  grayD:   "#3b4554",
   ok:      "#34d399",
   warn:    "#f5b14c",
   loc:     "#7fb4e0",
@@ -51,6 +54,12 @@ const CSS = `
 .vlr .card-hover{ transition:border-color .15s ease, background .15s ease; }
 .vlr .card-hover:hover{ border-color:${C.line2}; }
 .vlr .row-hover:hover td{ background:rgba(56,189,248,.04); }
+.vlr .menu-card{ transition:border-color .16s ease, transform .16s ease, box-shadow .16s ease, background .16s ease; }
+.vlr .menu-card:hover{ border-color:${C.grayD}; transform:translateY(-2px); box-shadow:0 18px 40px -24px rgba(0,0,0,.85); background:${C.panel}; }
+.vlr .menu-card:active{ transform:translateY(0); }
+.vlr .menu-card.accent:hover{ border-color:rgba(56,189,248,.4); box-shadow:0 18px 44px -22px rgba(56,189,248,.4); }
+.vlr .back-link{ transition:color .15s ease, border-color .15s ease; }
+.vlr .back-link:hover{ color:${C.accent} !important; border-color:${C.line2} !important; }
 .vlr select{ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238197b8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 13px center; }
 .vlr option{ background:${C.panel}; color:${C.txt}; }
 .vlr ::-webkit-scrollbar{ width:10px; height:10px; }
@@ -105,6 +114,7 @@ function Icon({ name, size = 16, color = "currentColor", style }) {
 // ══════════════════════════════════════════════════════════════
 export default function App() {
   const [loaded, setLoaded]         = useState(false);
+  const [page, setPage]             = useState("home");
   const [tab, setTab]               = useState("estoque");
   const [produtos, setProdutos]     = useState([]);
   const [historico, setHistorico]   = useState([]);
@@ -478,33 +488,69 @@ export default function App() {
           </div>
         </div>
         <button className="btn-ghost" onClick={() => askPin(() => { setAdminMsg(""); setAdminTab("produtos"); startAddProd(); setShowAdmin(true); })}
-          style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "transparent", color: C.muted, border: `1px solid ${C.line}`, borderRadius: 9, padding: "8px 14px", cursor: "pointer", fontFamily: FS, fontSize: 12.5, fontWeight: 500 }}>
+          style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "transparent", color: C.grayL, border: `1px solid ${C.grayD}`, borderRadius: 9, padding: "8px 14px", cursor: "pointer", fontFamily: FS, fontSize: 12.5, fontWeight: 500 }}>
           <Icon name="sliders" size={15} /> Admin
         </button>
         <span style={S.tag(C.accent)}>{produtos.length} padrões cadastrados</span>
-        <span style={{ marginLeft: "auto", fontFamily: FM, fontSize: 10.5, letterSpacing: 1, color: C.muted2, border: `1px solid ${C.line}`, borderRadius: 8, padding: "7px 12px", whiteSpace: "nowrap" }}>
+        <span style={{ marginLeft: "auto", fontFamily: FM, fontSize: 10.5, letterSpacing: 1, color: C.grayL, border: `1px solid ${C.grayD}`, borderRadius: 8, padding: "7px 12px", whiteSpace: "nowrap" }}>
           Desenvolvido por Emerson Santos
         </span>
       </header>
 
-      {/* Tabs */}
-      <div style={{ display: "flex", alignItems: "center", borderBottom: `1px solid ${C.line}`, padding: "0 28px", gap: 4, flexWrap: "wrap" }}>
-        {["estoque", "historico"].map(t => {
-          const on = tab === t;
-          return (
-            <button key={t} onClick={() => setTab(t)} style={{
-              display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer",
-              padding: "14px 14px", fontFamily: FM, fontSize: 11.5, letterSpacing: 1,
-              color: on ? C.accent : C.muted2,
-              borderBottom: on ? `2px solid ${C.accent}` : "2px solid transparent",
-              textTransform: "uppercase", fontWeight: on ? 600 : 400, marginBottom: -1,
-            }}>
-              <Icon name={t === "estoque" ? "list" : "history"} size={15} />
-              {t === "estoque" ? "Lista de padrões" : "Histórico de movimentações"}
-            </button>
-          );
-        })}
-      </div>
+      {/* ══ MAIN PAGE / MENU ══ */}
+      {page === "home" && (
+        <main style={{ padding: "34px 28px 48px", maxWidth: 1080, margin: "0 auto" }}>
+          <div style={{ maxWidth: 720, marginBottom: 28 }}>
+            <div style={{ fontFamily: FS, fontSize: 22, fontWeight: 700, letterSpacing: 0.2, color: C.txt, marginBottom: 8 }}>Painel de controle</div>
+            <div style={{ fontSize: 13.5, color: C.muted, lineHeight: 1.6 }}>
+              Selecione uma opção para gerenciar o estoque de tubos padrão: registre uma movimentação,
+              consulte a lista completa, acompanhe o histórico ou acesse a área administrativa.
+            </div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(258px, 1fr))", gap: 16 }}>
+            <MenuCard tone="accent" icon="swap" title="Realizar movimentação de padrão"
+              desc="Registre a transferência de um padrão entre locais — por leitura de QR Code ou seleção manual."
+              cta="Movimentar" action={openMove} />
+            <MenuCard icon="list" title="Lista de padrões"
+              desc="Consulte todos os padrões cadastrados, com código, descrição, categoria e local de armazenamento."
+              cta="Abrir lista" action={() => { setTab("estoque"); setPage("section"); }} />
+            <MenuCard icon="history" title="Histórico de movimentações"
+              desc="Acompanhe todas as movimentações registradas, com origem, destino, responsável e data."
+              cta="Ver histórico" action={() => { setTab("historico"); setPage("section"); }} />
+            <MenuCard icon="key" title="Área do Administrador"
+              desc="Gerencie produtos, locais, categorias e usuários, e altere o PIN. Acesso protegido por PIN."
+              cta="Acessar" action={() => askPin(() => { setAdminMsg(""); setAdminTab("produtos"); startAddProd(); setShowAdmin(true); })} />
+          </div>
+        </main>
+      )}
+
+      {page === "section" && <>
+        {/* Voltar ao menu */}
+        <div style={{ padding: "16px 28px 0", maxWidth: 1200, margin: "0 auto" }}>
+          <button className="back-link" onClick={() => setPage("home")}
+            style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "transparent", border: `1px solid ${C.grayD}`, borderRadius: 9, padding: "7px 13px", color: C.grayL, cursor: "pointer", fontFamily: FS, fontSize: 12.5 }}>
+            <Icon name="arrowL" size={15} /> Voltar ao menu
+          </button>
+        </div>
+
+        {/* Tabs */}
+        <div style={{ display: "flex", alignItems: "center", borderBottom: `1px solid ${C.line}`, padding: "8px 28px 0", gap: 4, flexWrap: "wrap", maxWidth: 1200, margin: "0 auto" }}>
+          {["estoque", "historico"].map(t => {
+            const on = tab === t;
+            return (
+              <button key={t} onClick={() => setTab(t)} style={{
+                display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer",
+                padding: "14px 14px", fontFamily: FM, fontSize: 11.5, letterSpacing: 1,
+                color: on ? C.accent : C.muted2,
+                borderBottom: on ? `2px solid ${C.accent}` : "2px solid transparent",
+                textTransform: "uppercase", fontWeight: on ? 600 : 400, marginBottom: -1,
+              }}>
+                <Icon name={t === "estoque" ? "list" : "history"} size={15} />
+                {t === "estoque" ? "Lista de padrões" : "Histórico de movimentações"}
+              </button>
+            );
+          })}
+        </div>
 
       {/* Content */}
       <main style={{ padding: "24px 28px", maxWidth: 1200, margin: "0 auto" }}>
@@ -573,6 +619,7 @@ export default function App() {
           }
         </>}
       </main>
+      </>}
 
       {/* ══ MODAL: MOVIMENTAÇÃO WIZARD ══ */}
       {showMove && <Modal title={<><Icon name="swap" size={18} color={C.accent} /> Realizar movimentação</>} onClose={closeMove}>
@@ -805,6 +852,37 @@ export default function App() {
 }
 
 // ── Micro-components ──────────────────────────────────────────
+function CardTile({ name, accent }) {
+  return (
+    <div style={{
+      width: 48, height: 48, borderRadius: 13, display: "flex", alignItems: "center", justifyContent: "center",
+      background: accent ? "linear-gradient(160deg, #142036, #0c1220)" : "linear-gradient(160deg, #1b212c, #12161d)",
+      border: `1px solid ${accent ? C.line2 : C.grayD}`,
+      color: accent ? C.accent : C.grayL,
+      boxShadow: accent ? "0 0 0 1px rgba(56,189,248,0.07), 0 10px 22px -14px rgba(56,189,248,0.6)" : "0 10px 22px -16px rgba(0,0,0,0.8)",
+    }}>
+      <Icon name={name} size={23} />
+    </div>
+  );
+}
+function MenuCard({ icon, title, desc, cta, action, tone }) {
+  const accent = tone === "accent";
+  return (
+    <button className={"menu-card" + (accent ? " accent" : "")} onClick={action} style={{
+      textAlign: "left", display: "flex", flexDirection: "column", gap: 15, background: C.panel2,
+      border: `1px solid ${C.line}`, borderRadius: 16, padding: "22px 22px 18px", cursor: "pointer", fontFamily: FS, color: C.txt,
+    }}>
+      <CardTile name={icon} accent={accent} />
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: 15.5, fontWeight: 600, letterSpacing: 0.2, marginBottom: 7 }}>{title}</div>
+        <div style={{ fontSize: 12.5, color: C.muted, lineHeight: 1.55 }}>{desc}</div>
+      </div>
+      <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: 7, fontFamily: FM, fontSize: 10.5, letterSpacing: 1.2, textTransform: "uppercase", color: accent ? C.accent : C.grayL }}>
+        {cta} <Icon name="arrowR" size={14} />
+      </div>
+    </button>
+  );
+}
 function Em() { return <span style={{ color: C.muted2, fontStyle: "italic" }}>—</span>; }
 function Lbl({ children }) { return <div style={{ fontFamily: FM, fontSize: 10, color: C.muted2, letterSpacing: 1.2, textTransform: "uppercase", margin: "14px 0 6px" }}>{children}</div>; }
 function Err({ children }) { return <div style={{ display: "flex", alignItems: "center", gap: 6, color: C.signal, fontSize: 12, marginTop: 7, fontFamily: FM }}><Icon name="alert" size={13} />{children}</div>; }
@@ -813,7 +891,7 @@ function Btn1({ onClick, children, style = {} }) {
   return <button className="btn-primary" onClick={onClick} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: C.accent, color: "#04121d", border: "none", borderRadius: 9, padding: "11px 14px", cursor: "pointer", fontFamily: FS, fontSize: 13, fontWeight: 600, letterSpacing: 0.2, ...style }}>{children}</button>;
 }
 function Btn2({ onClick, children }) {
-  return <button className="btn-ghost" onClick={onClick} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: "transparent", color: C.muted, border: `1px solid ${C.line}`, borderRadius: 9, padding: "11px 14px", cursor: "pointer", fontFamily: FS, fontSize: 13, fontWeight: 500 }}>{children}</button>;
+  return <button className="btn-ghost" onClick={onClick} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: "transparent", color: C.grayL, border: `1px solid ${C.grayD}`, borderRadius: 9, padding: "11px 14px", cursor: "pointer", fontFamily: FS, fontSize: 13, fontWeight: 500 }}>{children}</button>;
 }
 function IconBtn({ onClick, color, children, title }) {
   return <button className="iconbtn" onClick={onClick} title={title} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", background: "transparent", border: `1px solid ${color}33`, borderRadius: 8, width: 30, height: 28, cursor: "pointer", color }}>{children}</button>;
