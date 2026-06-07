@@ -490,9 +490,9 @@ export default function App() {
             <div style={{ fontFamily: FS, fontSize: 19, fontWeight: 700, letterSpacing: 0.2, color: C.txt }}>Estoque de Tubo Padrão</div>
           </div>
         </div>
-        <div style={{ marginLeft: "auto", width: 100 }}>
-          <div style={{ fontFamily: FM, fontSize: 10, fontWeight: 600, color: C.accent, textTransform: "uppercase", textAlign: "justify", textAlignLast: "justify", lineHeight: 1.55 }}>Desenvolvido por</div>
-          <div style={{ fontFamily: FM, fontSize: 10, color: C.muted, textAlign: "justify", textAlignLast: "justify", lineHeight: 1.55 }}>Emerson Santos</div>
+        <div style={{ marginLeft: "auto", display: "flex", flexDirection: "column", alignItems: "flex-start", lineHeight: 1.3 }}>
+          <span style={{ fontFamily: FS, fontSize: 10.5, color: C.muted, marginBottom: 2 }}>Desenvolvido por</span>
+          <span style={{ fontFamily: FS, fontSize: 12, fontWeight: 600, letterSpacing: 0.4, color: C.accent, textTransform: "uppercase" }}>Emerson Santos</span>
         </div>
       </header>
 
