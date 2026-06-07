@@ -18,23 +18,23 @@ const validCode = (c) => /^EC\d{3,5}$/.test(c.toUpperCase());
 
 // ── Design tokens ──────────────────────────────────────────────
 const C = {
-  bg:      "#0a0e17",
-  panel:   "#111726",
-  panel2:  "#0d131f",
-  line:    "#1d2738",
-  line2:   "#2a3850",
-  txt:     "#e7eef9",
-  muted:   "#8197b8",
-  muted2:  "#5e7088",
-  accent:  "#38bdf8",
-  accentD: "#0ea5e9",
+  bg:      "#f5f7fa",
+  panel:   "#ffffff",
+  panel2:  "#eef1f6",
+  line:    "#dde3ec",
+  line2:   "#c7d0dc",
+  txt:     "#1b2431",
+  muted:   "#5a6675",
+  muted2:  "#8a93a3",
+  accent:  "#2563eb",
+  accentD: "#1d4ed8",
   gray:    "#6b7280",
-  grayL:   "#9aa6b8",
-  grayD:   "#3b4554",
-  ok:      "#34d399",
-  warn:    "#f5b14c",
-  loc:     "#7fb4e0",
-  signal:  "#f0563f",
+  grayL:   "#5b6675",
+  grayD:   "#cdd5df",
+  ok:      "#15803d",
+  warn:    "#b45309",
+  loc:     "#0e7490",
+  signal:  "#dc2626",
 };
 const FS = "'IBM Plex Sans', system-ui, -apple-system, sans-serif";
 const FM = "'IBM Plex Mono', 'Courier New', monospace";
@@ -42,30 +42,30 @@ const FM = "'IBM Plex Mono', 'Courier New', monospace";
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 .vlr, .vlr *{ box-sizing:border-box; }
-.vlr ::selection{ background:rgba(56,189,248,.28); }
+.vlr ::selection{ background:rgba(37,99,235,.20); }
 .vlr input::placeholder{ color:${C.muted2}; }
-.vlr input:focus, .vlr select:focus{ border-color:${C.accent} !important; box-shadow:0 0 0 3px rgba(56,189,248,.13); }
-.vlr input:disabled{ opacity:.5; cursor:not-allowed; }
+.vlr input:focus, .vlr select:focus{ border-color:${C.accent} !important; box-shadow:0 0 0 3px rgba(37,99,235,.15); }
+.vlr input:disabled{ opacity:.55; cursor:not-allowed; }
 .vlr button{ transition:background .15s ease, border-color .15s ease, color .15s ease, filter .15s ease, transform .1s ease; }
 .vlr button:active{ transform:translateY(1px); }
-.vlr .btn-primary:hover{ background:${C.accentD}; box-shadow:0 8px 22px -12px rgba(56,189,248,.85); }
-.vlr .btn-ghost:hover{ border-color:${C.line2}; color:${C.txt}; background:${C.panel}; }
-.vlr .iconbtn:hover{ filter:brightness(1.3); }
-.vlr .card-hover{ transition:border-color .15s ease, background .15s ease; }
-.vlr .card-hover:hover{ border-color:${C.line2}; }
-.vlr .row-hover:hover td{ background:rgba(56,189,248,.04); }
+.vlr .btn-primary:hover{ background:${C.accentD}; box-shadow:0 8px 20px -12px rgba(37,99,235,.55); }
+.vlr .btn-ghost:hover{ border-color:${C.line2}; color:${C.txt}; background:${C.panel2}; }
+.vlr .iconbtn:hover{ filter:brightness(.92); }
+.vlr .card-hover{ transition:border-color .15s ease, background .15s ease, box-shadow .15s ease; }
+.vlr .card-hover:hover{ border-color:${C.line2}; box-shadow:0 6px 18px -12px rgba(27,36,49,.2); }
+.vlr .row-hover:hover td{ background:rgba(37,99,235,.06); }
 .vlr .menu-card{ transition:border-color .16s ease, transform .16s ease, box-shadow .16s ease, background .16s ease; }
-.vlr .menu-card:hover{ border-color:${C.grayD}; transform:translateY(-2px); box-shadow:0 18px 40px -24px rgba(0,0,0,.85); background:${C.panel}; }
+.vlr .menu-card:hover{ border-color:${C.line2}; transform:translateY(-2px); box-shadow:0 14px 30px -20px rgba(27,36,49,.28); }
 .vlr .menu-card:active{ transform:translateY(0); }
-.vlr .menu-card.accent:hover{ border-color:rgba(56,189,248,.4); box-shadow:0 18px 44px -22px rgba(56,189,248,.4); }
-.vlr .back-link{ transition:color .15s ease, border-color .15s ease; }
-.vlr .back-link:hover{ color:${C.accent} !important; border-color:${C.line2} !important; }
+.vlr .menu-card.accent:hover{ border-color:rgba(37,99,235,.45); box-shadow:0 14px 32px -20px rgba(37,99,235,.4); }
+.vlr .back-link{ transition:color .15s ease, border-color .15s ease, background .15s ease; }
+.vlr .back-link:hover{ color:${C.accent} !important; border-color:${C.line2} !important; background:${C.panel2}; }
 .vlr .table-scroll{ scrollbar-width:thin; scrollbar-color:${C.line2} ${C.panel2}; }
 .vlr .table-scroll::-webkit-scrollbar{ width:12px; height:12px; }
 .vlr .table-scroll::-webkit-scrollbar-track{ background:${C.panel2}; }
 .vlr .table-scroll::-webkit-scrollbar-thumb{ background:${C.line2}; border-radius:8px; border:3px solid ${C.panel2}; background-clip:padding-box; }
-.vlr .table-scroll::-webkit-scrollbar-thumb:hover{ background:${C.gray}; background-clip:padding-box; }
-.vlr select{ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238197b8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 13px center; }
+.vlr .table-scroll::-webkit-scrollbar-thumb:hover{ background:${C.muted2}; background-clip:padding-box; }
+.vlr select{ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235a6675' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 13px center; }
 .vlr option{ background:${C.panel}; color:${C.txt}; }
 .vlr ::-webkit-scrollbar{ width:10px; height:10px; }
 .vlr ::-webkit-scrollbar-thumb{ background:${C.line}; border-radius:8px; border:2px solid transparent; background-clip:padding-box; }
@@ -130,7 +130,6 @@ export default function App() {
 
   // modals
   const [showMove, setShowMove]       = useState(false);
-  const [showAdmin, setShowAdmin]     = useState(false);
   const [showPinGate, setShowPinGate] = useState(false);
   const [pinInput, setPinInput]       = useState("");
   const [pinError, setPinError]       = useState("");
@@ -475,15 +474,15 @@ export default function App() {
   return (
     <div className="vlr" style={{
       minHeight: "100vh", background: C.bg, color: C.txt, fontFamily: FS,
-      backgroundImage: `radial-gradient(1100px 480px at 75% -12%, rgba(56,189,248,0.07), transparent 60%), linear-gradient(rgba(129,151,184,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(129,151,184,0.045) 1px, transparent 1px)`,
+      backgroundImage: `radial-gradient(1100px 480px at 75% -12%, rgba(37,99,235,0.06), transparent 60%), linear-gradient(rgba(27,36,49,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(27,36,49,0.035) 1px, transparent 1px)`,
       backgroundSize: "100% 100%, 34px 34px, 34px 34px",
     }}>
       <style>{CSS}</style>
 
       {/* Header */}
-      <header style={{ borderBottom: `1px solid ${C.line}`, padding: "18px 28px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", background: "linear-gradient(180deg, rgba(17,23,38,0.55), transparent)" }}>
+      <header style={{ borderBottom: `1px solid ${C.line}`, padding: "18px 28px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0))" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{ width: 42, height: 42, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(160deg, #142036, #0c1220)", border: `1px solid ${C.line2}`, color: C.accent, boxShadow: "0 0 0 1px rgba(56,189,248,0.07), 0 10px 22px -14px rgba(56,189,248,0.6)" }}>
+          <div style={{ width: 42, height: 42, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(160deg, #eef3fc, #e1ebf9)", border: `1px solid ${C.line2}`, color: C.accent, boxShadow: "0 1px 2px rgba(27,36,49,0.06)" }}>
             <Icon name="box" size={22} />
           </div>
           <div>
@@ -491,9 +490,10 @@ export default function App() {
             <div style={{ fontFamily: FS, fontSize: 19, fontWeight: 700, letterSpacing: 0.2, color: C.txt }}>Estoque de Tubo Padrão</div>
           </div>
         </div>
-        <span style={{ marginLeft: "auto", fontFamily: FM, fontSize: 10.5, letterSpacing: 1, color: C.grayL, border: `1px solid ${C.grayD}`, borderRadius: 8, padding: "7px 12px", whiteSpace: "nowrap" }}>
-          Desenvolvido por Emerson Santos
-        </span>
+        <div style={{ marginLeft: "auto", display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+          <span style={{ fontFamily: FM, fontSize: 9, letterSpacing: 1, color: C.muted2, paddingLeft: 11, marginBottom: 4 }}>Desenvolvido por:</span>
+          <span style={{ fontFamily: FM, fontSize: 9.5, letterSpacing: 0.8, color: C.grayL, border: `1px solid ${C.grayD}`, borderRadius: 8, padding: "6px 11px", whiteSpace: "nowrap" }}>Emerson Santos</span>
+        </div>
       </header>
 
       {/* ══ MAIN PAGE / MENU ══ */}
@@ -518,7 +518,7 @@ export default function App() {
               cta="Ver histórico" action={() => setPage("historico")} />
             <MenuCard icon="key" title="Área do Administrador"
               desc="Gerencie produtos, locais, categorias e usuários, e altere o PIN. Acesso protegido por PIN."
-              cta="Acessar" action={() => askPin(() => { setAdminMsg(""); setAdminTab("produtos"); startAddProd(); setShowAdmin(true); })} />
+              cta="Acessar" action={() => askPin(() => { setAdminMsg(""); setAdminTab("produtos"); startAddProd(); setPage("admin"); })} />
           </div>
         </main>
       )}
@@ -536,7 +536,7 @@ export default function App() {
                 placeholder="Buscar por código, nome ou local…" style={{ ...S.input, paddingLeft: 38 }} />
             </div>
             <button className="btn-primary" onClick={openMove} style={{
-              display: "inline-flex", alignItems: "center", gap: 8, background: C.accent, color: "#04121d", border: "none", borderRadius: 9,
+              display: "inline-flex", alignItems: "center", gap: 8, background: C.accent, color: "#ffffff", border: "none", borderRadius: 9,
               padding: "0 18px", height: 40, cursor: "pointer", fontFamily: FS, fontSize: 13, fontWeight: 600, whiteSpace: "nowrap",
             }}><Icon name="swap" size={16} /> Realizar movimentação</button>
           </div>
@@ -557,7 +557,7 @@ export default function App() {
                     </thead>
                     <tbody>
                       {filtered.map((p, i) => (
-                        <tr key={p.code} className="row-hover" style={{ background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.012)" }}>
+                        <tr key={p.code} className="row-hover" style={{ background: i % 2 === 0 ? "transparent" : "rgba(27,36,49,0.022)" }}>
                           <td style={{ padding: "12px 14px", borderBottom: `1px solid ${C.line}`, fontFamily: FM, fontSize: 13, fontWeight: 600, color: C.accent, letterSpacing: 0.5 }}>{p.code}</td>
                           <td style={{ padding: "12px 14px", borderBottom: `1px solid ${C.line}`, fontFamily: FM, fontSize: 13, color: C.muted }}>{p.name || <Em />}</td>
                           <td style={{ padding: "12px 14px", borderBottom: `1px solid ${C.line}`, fontFamily: FM, fontSize: 13, color: C.muted }}>{p.category || <Em />}</td>
@@ -679,8 +679,10 @@ export default function App() {
       </Modal>}
 
       {/* ══ MODAL: ADMIN ══ */}
-      {showAdmin && <Modal title={<><Icon name="sliders" size={18} color={C.accent} /> Administração</>} onClose={() => setShowAdmin(false)} wide>
-        <div style={{ display: "flex", gap: 6, marginBottom: 16, flexWrap: "wrap" }}>
+      {page === "admin" && (
+        <main style={{ padding: "20px 28px 40px", maxWidth: 860, margin: "0 auto" }}>
+          <PageHead icon="sliders" title="Área do Administrador" onBack={() => setPage("home")} />
+          <div style={{ display: "flex", gap: 6, marginBottom: 16, flexWrap: "wrap" }}>
           {[["produtos", "Produtos", "box"], ["locais", "Locais", "pin"], ["categorias", "Categorias", "tag"], ["responsaveis", "Usuários", "user"], ["pin", "PIN", "key"]].map(([t, l, ic]) => {
             const on = adminTab === t;
             return (
@@ -712,7 +714,7 @@ export default function App() {
               <Btn1 onClick={saveProd}><Icon name={apEdit ? "save" : "plus"} size={15} /> {apEdit ? "Salvar" : "Cadastrar"}</Btn1>
             </Row>
           </div>
-          <div style={{ maxHeight: 230, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ maxHeight: 380, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
             {produtos.length === 0 && <div style={{ color: C.muted2, fontSize: 12, textAlign: "center", padding: "20px 0", fontFamily: FM }}>Nenhum produto cadastrado.</div>}
             {produtos.map(p => (
               <div key={p.code} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: C.panel2, border: `1px solid ${C.line}`, borderRadius: 10, padding: "9px 12px", fontSize: 12.5, gap: 8 }}>
@@ -743,7 +745,7 @@ export default function App() {
               <Btn1 onClick={saveLocal}><Icon name={alEdit ? "save" : "plus"} size={15} /> {alEdit ? "Salvar" : "Adicionar"}</Btn1>
             </Row>
           </div>
-          <div style={{ maxHeight: 210, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ maxHeight: 340, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
             {locais.length === 0 && <div style={{ color: C.muted2, fontSize: 12, textAlign: "center", padding: "20px 0", fontFamily: FM }}>Nenhum local cadastrado.</div>}
             {locais.map(l => (
               <div key={l} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: C.panel2, border: `1px solid ${C.line}`, borderRadius: 10, padding: "9px 12px", fontSize: 12.5 }}>
@@ -770,7 +772,7 @@ export default function App() {
               <Btn1 onClick={saveCat}><Icon name={acEdit ? "save" : "plus"} size={15} /> {acEdit ? "Salvar" : "Adicionar"}</Btn1>
             </Row>
           </div>
-          <div style={{ maxHeight: 210, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ maxHeight: 340, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
             {categorias.length === 0 && <div style={{ color: C.muted2, fontSize: 12, textAlign: "center", padding: "20px 0", fontFamily: FM }}>Nenhuma categoria cadastrada.</div>}
             {categorias.map(c => (
               <div key={c} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: C.panel2, border: `1px solid ${C.line}`, borderRadius: 10, padding: "9px 12px", fontSize: 12.5 }}>
@@ -797,7 +799,7 @@ export default function App() {
               <Btn1 onClick={saveResp}><Icon name={arEdit ? "save" : "plus"} size={15} /> {arEdit ? "Salvar" : "Adicionar"}</Btn1>
             </Row>
           </div>
-          <div style={{ maxHeight: 210, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ maxHeight: 340, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
             {resps.length === 0 && <div style={{ color: C.muted2, fontSize: 12, textAlign: "center", padding: "20px 0", fontFamily: FM }}>Nenhum usuário cadastrado.</div>}
             {resps.map(r => (
               <div key={r} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: C.panel2, border: `1px solid ${C.line}`, borderRadius: 10, padding: "9px 12px", fontSize: 12.5 }}>
@@ -822,7 +824,8 @@ export default function App() {
         </>}
 
         {adminMsg && <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 7, marginTop: 14, color: C.ok, fontSize: 12.5, textAlign: "center", background: `${C.ok}12`, border: `1px solid ${C.ok}33`, borderRadius: 9, padding: "9px" }}><Icon name="check" size={14} />{adminMsg}</div>}
-      </Modal>}
+        </main>
+      )}
 
     </div>
   );
@@ -847,10 +850,10 @@ function CardTile({ name, accent }) {
   return (
     <div style={{
       width: 48, height: 48, borderRadius: 13, display: "flex", alignItems: "center", justifyContent: "center",
-      background: accent ? "linear-gradient(160deg, #142036, #0c1220)" : "linear-gradient(160deg, #1b212c, #12161d)",
+      background: accent ? "linear-gradient(160deg, #eef3fc, #e1ebf9)" : "linear-gradient(160deg, #f1f3f7, #e7ebf1)",
       border: `1px solid ${accent ? C.line2 : C.grayD}`,
-      color: accent ? C.accent : C.grayL,
-      boxShadow: accent ? "0 0 0 1px rgba(56,189,248,0.07), 0 10px 22px -14px rgba(56,189,248,0.6)" : "0 10px 22px -16px rgba(0,0,0,0.8)",
+      color: accent ? C.accent : C.gray,
+      boxShadow: accent ? "0 1px 2px rgba(37,99,235,0.08)" : "0 1px 2px rgba(27,36,49,0.05)",
     }}>
       <Icon name={name} size={23} />
     </div>
@@ -879,7 +882,7 @@ function Lbl({ children }) { return <div style={{ fontFamily: FM, fontSize: 10, 
 function Err({ children }) { return <div style={{ display: "flex", alignItems: "center", gap: 6, color: C.signal, fontSize: 12, marginTop: 7, fontFamily: FM }}><Icon name="alert" size={13} />{children}</div>; }
 function Row({ children }) { return <div style={{ display: "flex", gap: 10, marginTop: 14 }}>{children}</div>; }
 function Btn1({ onClick, children, style = {} }) {
-  return <button className="btn-primary" onClick={onClick} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: C.accent, color: "#04121d", border: "none", borderRadius: 9, padding: "11px 14px", cursor: "pointer", fontFamily: FS, fontSize: 13, fontWeight: 600, letterSpacing: 0.2, ...style }}>{children}</button>;
+  return <button className="btn-primary" onClick={onClick} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: C.accent, color: "#ffffff", border: "none", borderRadius: 9, padding: "11px 14px", cursor: "pointer", fontFamily: FS, fontSize: 13, fontWeight: 600, letterSpacing: 0.2, ...style }}>{children}</button>;
 }
 function Btn2({ onClick, children }) {
   return <button className="btn-ghost" onClick={onClick} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: "transparent", color: C.grayL, border: `1px solid ${C.grayD}`, borderRadius: 9, padding: "11px 14px", cursor: "pointer", fontFamily: FS, fontSize: 13, fontWeight: 500 }}>{children}</button>;
@@ -897,8 +900,8 @@ function Select({ value, onChange, placeholder, options }) {
 }
 function Modal({ title, onClose, children, wide }) {
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(4,8,15,0.72)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 16 }}>
-      <div className="modal-card" style={{ background: C.panel, border: `1px solid ${C.line}`, borderRadius: 16, padding: 24, width: "100%", maxWidth: wide ? 500 : 390, maxHeight: "92vh", overflowY: "auto", boxShadow: "0 30px 80px -30px rgba(0,0,0,0.9), 0 0 0 1px rgba(56,189,248,0.04)" }}>
+    <div style={{ position: "fixed", inset: 0, background: "rgba(27,36,49,0.45)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 16 }}>
+      <div className="modal-card" style={{ background: C.panel, border: `1px solid ${C.line}`, borderRadius: 16, padding: 24, width: "100%", maxWidth: wide ? 500 : 390, maxHeight: "92vh", overflowY: "auto", boxShadow: "0 24px 60px -24px rgba(27,36,49,0.4)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
           <span style={{ display: "flex", alignItems: "center", gap: 9, fontFamily: FS, fontWeight: 600, fontSize: 15, letterSpacing: 0.2, color: C.txt }}>{title}</span>
           <button className="iconbtn" onClick={onClose} style={{ display: "inline-flex", background: "transparent", border: "none", color: C.muted2, cursor: "pointer", padding: 4 }}><Icon name="close" size={20} /></button>
