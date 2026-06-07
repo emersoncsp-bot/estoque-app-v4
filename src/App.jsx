@@ -60,6 +60,11 @@ const CSS = `
 .vlr .menu-card.accent:hover{ border-color:rgba(56,189,248,.4); box-shadow:0 18px 44px -22px rgba(56,189,248,.4); }
 .vlr .back-link{ transition:color .15s ease, border-color .15s ease; }
 .vlr .back-link:hover{ color:${C.accent} !important; border-color:${C.line2} !important; }
+.vlr .table-scroll{ scrollbar-width:thin; scrollbar-color:${C.line2} ${C.panel2}; }
+.vlr .table-scroll::-webkit-scrollbar{ width:12px; height:12px; }
+.vlr .table-scroll::-webkit-scrollbar-track{ background:${C.panel2}; }
+.vlr .table-scroll::-webkit-scrollbar-thumb{ background:${C.line2}; border-radius:8px; border:3px solid ${C.panel2}; background-clip:padding-box; }
+.vlr .table-scroll::-webkit-scrollbar-thumb:hover{ background:${C.gray}; background-clip:padding-box; }
 .vlr select{ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238197b8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 13px center; }
 .vlr option{ background:${C.panel}; color:${C.txt}; }
 .vlr ::-webkit-scrollbar{ width:10px; height:10px; }
@@ -115,7 +120,6 @@ function Icon({ name, size = 16, color = "currentColor", style }) {
 export default function App() {
   const [loaded, setLoaded]         = useState(false);
   const [page, setPage]             = useState("home");
-  const [tab, setTab]               = useState("estoque");
   const [produtos, setProdutos]     = useState([]);
   const [historico, setHistorico]   = useState([]);
   const [locais, setLocais]         = useState([]);
@@ -487,11 +491,6 @@ export default function App() {
             <div style={{ fontFamily: FS, fontSize: 19, fontWeight: 700, letterSpacing: 0.2, color: C.txt }}>Estoque de Tubo Padrão</div>
           </div>
         </div>
-        <button className="btn-ghost" onClick={() => askPin(() => { setAdminMsg(""); setAdminTab("produtos"); startAddProd(); setShowAdmin(true); })}
-          style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "transparent", color: C.grayL, border: `1px solid ${C.grayD}`, borderRadius: 9, padding: "8px 14px", cursor: "pointer", fontFamily: FS, fontSize: 12.5, fontWeight: 500 }}>
-          <Icon name="sliders" size={15} /> Admin
-        </button>
-        <span style={S.tag(C.accent)}>{produtos.length} padrões cadastrados</span>
         <span style={{ marginLeft: "auto", fontFamily: FM, fontSize: 10.5, letterSpacing: 1, color: C.grayL, border: `1px solid ${C.grayD}`, borderRadius: 8, padding: "7px 12px", whiteSpace: "nowrap" }}>
           Desenvolvido por Emerson Santos
         </span>
@@ -513,10 +512,10 @@ export default function App() {
               cta="Movimentar" action={openMove} />
             <MenuCard icon="list" title="Lista de padrões"
               desc="Consulte todos os padrões cadastrados, com código, descrição, categoria e local de armazenamento."
-              cta="Abrir lista" action={() => { setTab("estoque"); setPage("section"); }} />
+              cta="Abrir lista" action={() => setPage("lista")} />
             <MenuCard icon="history" title="Histórico de movimentações"
               desc="Acompanhe todas as movimentações registradas, com origem, destino, responsável e data."
-              cta="Ver histórico" action={() => { setTab("historico"); setPage("section"); }} />
+              cta="Ver histórico" action={() => setPage("historico")} />
             <MenuCard icon="key" title="Área do Administrador"
               desc="Gerencie produtos, locais, categorias e usuários, e altere o PIN. Acesso protegido por PIN."
               cta="Acessar" action={() => askPin(() => { setAdminMsg(""); setAdminTab("produtos"); startAddProd(); setShowAdmin(true); })} />
@@ -524,39 +523,13 @@ export default function App() {
         </main>
       )}
 
-      {page === "section" && <>
-        {/* Voltar ao menu */}
-        <div style={{ padding: "16px 28px 0", maxWidth: 1200, margin: "0 auto" }}>
-          <button className="back-link" onClick={() => setPage("home")}
-            style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "transparent", border: `1px solid ${C.grayD}`, borderRadius: 9, padding: "7px 13px", color: C.grayL, cursor: "pointer", fontFamily: FS, fontSize: 12.5 }}>
-            <Icon name="arrowL" size={15} /> Voltar ao menu
-          </button>
-        </div>
+      {/* ══ PÁGINA: LISTA DE PADRÕES ══ */}
+      {page === "lista" && (
+        <main style={{ padding: "20px 28px 32px", maxWidth: 1200, margin: "0 auto" }}>
+          <PageHead icon="list" title="Lista de padrões" onBack={() => setPage("home")} />
 
-        {/* Tabs */}
-        <div style={{ display: "flex", alignItems: "center", borderBottom: `1px solid ${C.line}`, padding: "8px 28px 0", gap: 4, flexWrap: "wrap", maxWidth: 1200, margin: "0 auto" }}>
-          {["estoque", "historico"].map(t => {
-            const on = tab === t;
-            return (
-              <button key={t} onClick={() => setTab(t)} style={{
-                display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer",
-                padding: "14px 14px", fontFamily: FM, fontSize: 11.5, letterSpacing: 1,
-                color: on ? C.accent : C.muted2,
-                borderBottom: on ? `2px solid ${C.accent}` : "2px solid transparent",
-                textTransform: "uppercase", fontWeight: on ? 600 : 400, marginBottom: -1,
-              }}>
-                <Icon name={t === "estoque" ? "list" : "history"} size={15} />
-                {t === "estoque" ? "Lista de padrões" : "Histórico de movimentações"}
-              </button>
-            );
-          })}
-        </div>
-
-      {/* Content */}
-      <main style={{ padding: "24px 28px", maxWidth: 1200, margin: "0 auto" }}>
-
-        {tab === "estoque" && <>
-          <div style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18, flexWrap: "wrap" }}>
+            <span style={S.tag(C.accent)}>{produtos.length} padrões cadastrados</span>
             <div style={{ position: "relative", flex: 1, minWidth: 220 }}>
               <span style={{ position: "absolute", left: 13, top: "50%", transform: "translateY(-50%)", color: C.muted2, pointerEvents: "none", display: "flex" }}><Icon name="search" size={16} /></span>
               <input value={search} onChange={e => setSearch(e.target.value)}
@@ -564,7 +537,7 @@ export default function App() {
             </div>
             <button className="btn-primary" onClick={openMove} style={{
               display: "inline-flex", alignItems: "center", gap: 8, background: C.accent, color: "#04121d", border: "none", borderRadius: 9,
-              padding: "0 18px", cursor: "pointer", fontFamily: FS, fontSize: 13, fontWeight: 600, whiteSpace: "nowrap",
+              padding: "0 18px", height: 40, cursor: "pointer", fontFamily: FS, fontSize: 13, fontWeight: 600, whiteSpace: "nowrap",
             }}><Icon name="swap" size={16} /> Realizar movimentação</button>
           </div>
 
@@ -573,22 +546,22 @@ export default function App() {
                 {produtos.length === 0 ? "Nenhum produto cadastrado." : "Nenhum resultado."}
               </div>
             : <div style={{ border: `1px solid ${C.line}`, borderRadius: 14, overflow: "hidden", background: C.panel2 }}>
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <div className="table-scroll" style={{ overflow: "auto", maxHeight: "calc(100vh - 260px)" }}>
+                  <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0, fontSize: 13 }}>
                     <thead>
-                      <tr style={{ borderBottom: `1px solid ${C.line}`, background: C.panel }}>
+                      <tr>
                         {["Código", "Descrição", "Categoria do padrão", "Local de armazenamento"].map(h => (
-                          <th key={h} style={{ textAlign: "left", padding: "12px 14px", color: C.muted2, fontWeight: 500, letterSpacing: 1, fontSize: 10, textTransform: "uppercase", fontFamily: FM, whiteSpace: "nowrap" }}>{h}</th>
+                          <th key={h} style={{ textAlign: "left", padding: "13px 14px", color: C.muted2, fontWeight: 500, letterSpacing: 1, fontSize: 10, textTransform: "uppercase", fontFamily: FM, whiteSpace: "nowrap", position: "sticky", top: 0, zIndex: 2, background: C.panel, boxShadow: `inset 0 -1px 0 ${C.line2}` }}>{h}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
                       {filtered.map((p, i) => (
-                        <tr key={p.code} className="row-hover" style={{ borderBottom: `1px solid ${C.line}`, background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.012)" }}>
-                          <td style={{ padding: "12px 14px", fontFamily: FM, fontWeight: 600, color: C.accent, letterSpacing: 0.5 }}>{p.code}</td>
-                          <td style={{ padding: "12px 14px", color: C.muted }}>{p.name || <Em />}</td>
-                          <td style={{ padding: "12px 14px", color: C.muted }}>{p.category || <Em />}</td>
-                          <td style={{ padding: "12px 14px" }}><span style={S.tag(C.loc)}><Icon name="pin" size={12} />{p.shelf}</span></td>
+                        <tr key={p.code} className="row-hover" style={{ background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.012)" }}>
+                          <td style={{ padding: "12px 14px", borderBottom: `1px solid ${C.line}`, fontFamily: FM, fontSize: 13, fontWeight: 600, color: C.accent, letterSpacing: 0.5 }}>{p.code}</td>
+                          <td style={{ padding: "12px 14px", borderBottom: `1px solid ${C.line}`, fontFamily: FM, fontSize: 13, color: C.muted }}>{p.name || <Em />}</td>
+                          <td style={{ padding: "12px 14px", borderBottom: `1px solid ${C.line}`, fontFamily: FM, fontSize: 13, color: C.muted }}>{p.category || <Em />}</td>
+                          <td style={{ padding: "12px 14px", borderBottom: `1px solid ${C.line}` }}><span style={S.tag(C.loc)}><Icon name="pin" size={12} />{p.shelf}</span></td>
                         </tr>
                       ))}
                     </tbody>
@@ -596,9 +569,14 @@ export default function App() {
                 </div>
               </div>
           }
-        </>}
+        </main>
+      )}
 
-        {tab === "historico" && <>
+      {/* ══ PÁGINA: HISTÓRICO DE MOVIMENTAÇÕES ══ */}
+      {page === "historico" && (
+        <main style={{ padding: "20px 28px 32px", maxWidth: 1200, margin: "0 auto" }}>
+          <PageHead icon="history" title="Histórico de movimentações" onBack={() => setPage("home")} />
+
           <div style={{ marginBottom: 16, color: C.muted2, fontSize: 11, letterSpacing: 1, textTransform: "uppercase", fontFamily: FM }}>
             {historico.length} {historico.length === 1 ? "movimentação registrada" : "movimentações registradas"}
           </div>
@@ -606,20 +584,19 @@ export default function App() {
             ? <div style={{ textAlign: "center", color: C.muted2, padding: "64px 0", fontSize: 13.5, fontFamily: FM }}>Nenhuma movimentação registrada.</div>
             : <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {historico.map(h => (
-                  <div key={h.id} className="card-hover" style={{ background: C.panel, border: `1px solid ${C.line}`, borderRadius: 12, padding: "13px 16px", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-                    <span style={{ fontFamily: FM, color: C.accent, fontWeight: 600, letterSpacing: 0.5, minWidth: 72 }}>{h.code}</span>
+                  <div key={h.id} className="card-hover" style={{ background: C.panel, border: `1px solid ${C.line}`, borderRadius: 12, padding: "13px 16px", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", fontFamily: FM, fontSize: 13 }}>
+                    <span style={{ fontFamily: FM, fontSize: 13, color: C.accent, fontWeight: 600, letterSpacing: 0.5, minWidth: 72 }}>{h.code}</span>
                     <span style={S.tag(C.loc)}>{h.de}</span>
                     <Icon name="arrowR" size={15} color={C.muted2} />
                     <span style={S.tag(C.ok)}>{h.para}</span>
-                    <span style={{ display: "flex", alignItems: "center", gap: 6, color: C.muted, fontSize: 12, marginLeft: "auto" }}><Icon name="user" size={14} />{h.responsavel}</span>
-                    <span style={{ display: "flex", alignItems: "center", gap: 6, color: C.muted2, fontSize: 11, fontFamily: FM }}><Icon name="clock" size={13} />{fmt(h.data)}</span>
+                    <span style={{ display: "flex", alignItems: "center", gap: 6, color: C.muted, fontSize: 13, fontFamily: FM, marginLeft: "auto" }}><Icon name="user" size={14} />{h.responsavel}</span>
+                    <span style={{ display: "flex", alignItems: "center", gap: 6, color: C.muted2, fontSize: 12.5, fontFamily: FM }}><Icon name="clock" size={13} />{fmt(h.data)}</span>
                   </div>
                 ))}
               </div>
           }
-        </>}
-      </main>
-      </>}
+        </main>
+      )}
 
       {/* ══ MODAL: MOVIMENTAÇÃO WIZARD ══ */}
       {showMove && <Modal title={<><Icon name="swap" size={18} color={C.accent} /> Realizar movimentação</>} onClose={closeMove}>
@@ -852,6 +829,20 @@ export default function App() {
 }
 
 // ── Micro-components ──────────────────────────────────────────
+function PageHead({ icon, title, onBack }) {
+  return (
+    <div style={{ marginBottom: 22 }}>
+      <button className="back-link" onClick={onBack}
+        style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "transparent", border: `1px solid ${C.grayD}`, borderRadius: 9, padding: "7px 13px", color: C.grayL, cursor: "pointer", fontFamily: FS, fontSize: 12.5, marginBottom: 16 }}>
+        <Icon name="arrowL" size={15} /> Voltar ao menu
+      </button>
+      <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+        <span style={{ color: C.accent, display: "flex" }}><Icon name={icon} size={21} /></span>
+        <span style={{ fontFamily: FS, fontSize: 20, fontWeight: 700, letterSpacing: 0.2, color: C.txt }}>{title}</span>
+      </div>
+    </div>
+  );
+}
 function CardTile({ name, accent }) {
   return (
     <div style={{
