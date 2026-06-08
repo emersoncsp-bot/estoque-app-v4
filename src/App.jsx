@@ -283,7 +283,7 @@ export default function App() {
     const code = mvProdInput.toUpperCase().trim();
     if (!validCode(code)) { setMvError("Código inválido. Use o formato EC + 3 a 5 números"); return; }
     const prod = produtos.find(p => p.code === code);
-    if (!prod) { setMvError("Produto não encontrado"); return; }
+    if (!prod) { setMvError("Padrão não encontrado"); return; }
     setMvProdObj(prod); setMvStep(2);
   };
 
@@ -292,7 +292,7 @@ export default function App() {
     const loc = mvLocalInput.trim();
     if (!loc) { setMvError("Selecione ou escaneie o local de destino"); return; }
     if (!locais.includes(loc)) { setMvError("Local não reconhecido"); return; }
-    if (loc === mvProdObj.shelf) { setMvError("O produto já está neste local"); return; }
+    if (loc === mvProdObj.shelf) { setMvError("O padrão já está neste local"); return; }
     setMvStep(3);
   };
 
@@ -330,7 +330,7 @@ export default function App() {
     const code = val.toUpperCase();
     if (!validCode(code)) { setMvError("QR inválido: esperado EC + 3 a 5 números"); return; }
     const prod = produtos.find(p => p.code === code);
-    if (!prod) { setMvError("Produto não encontrado: " + code); return; }
+    if (!prod) { setMvError("Padrão não encontrado: " + code); return; }
     setMvProdInput(code); setMvProdObj(prod); setMvStep(2);
   });
 
@@ -350,7 +350,7 @@ export default function App() {
     if (!apName.trim())                             { setApError("Informe a descrição."); return; }
     if (!apCat)                                     { setApError("Selecione a categoria do padrão."); return; }
     if (!apLocal)                                   { setApError("Selecione o local de armazenamento"); return; }
-    if (!apEdit && produtos.find(p => p.code === code)) { setApError("Produto já cadastrado"); return; }
+    if (!apEdit && produtos.find(p => p.code === code)) { setApError("Padrão já cadastrado"); return; }
 
     if (apEdit) {
       await supabase.from("produtos").update({ code, name: apName.trim(), category: apCat, shelf: apLocal }).eq("code", apEdit.code);
@@ -362,14 +362,14 @@ export default function App() {
     }
 
     setApEdit(null); setApCode(""); setApName(""); setApCat(""); setApLocal(""); setApError("");
-    setAdminMsg(apEdit ? "Produto atualizado!" : "Produto cadastrado!"); setTimeout(() => setAdminMsg(""), 3000);
+    setAdminMsg(apEdit ? "Padrão atualizado!" : "Padrão cadastrado!"); setTimeout(() => setAdminMsg(""), 3000);
   };
 
   const deleteProd = async (code) => {
-    if (!window.confirm(`Excluir produto ${code}?`)) return;
+    if (!window.confirm(`Excluir padrão ${code}?`)) return;
     await supabase.from("produtos").delete().eq("code", code);
     setProdutos(prev => prev.filter(p => p.code !== code));
-    setAdminMsg("Produto excluído."); setTimeout(() => setAdminMsg(""), 3000);
+    setAdminMsg("Padrão excluído."); setTimeout(() => setAdminMsg(""), 3000);
   };
 
   // ── Admin – Locais ────────────────────────────────────────
@@ -519,7 +519,7 @@ export default function App() {
               desc="Acompanhe todas as movimentações registradas, com origem, destino, responsável e data."
               cta="Ver histórico" action={() => setPage("historico")} />
             <MenuCard icon="key" title="Área do Administrador"
-              desc="Gerencie produtos, locais, categorias e usuários, e altere o PIN. Acesso protegido por PIN."
+              desc="Gerencie padrões, locais, categorias e usuários, e altere o PIN. Acesso protegido por PIN."
               cta="Acessar" action={() => askPin(() => { setAdminMsg(""); setAdminTab("produtos"); startAddProd(); setPage("admin"); })} />
           </div>
         </main>
@@ -545,7 +545,7 @@ export default function App() {
 
           {filtered.length === 0
             ? <div style={{ textAlign: "center", color: C.muted2, padding: "64px 0", fontSize: 13.5, fontFamily: FM }}>
-                {produtos.length === 0 ? "Nenhum produto cadastrado." : "Nenhum resultado."}
+                {produtos.length === 0 ? "Nenhum padrão cadastrado." : "Nenhum resultado."}
               </div>
             : <div style={{ border: `1px solid ${C.line}`, borderRadius: 14, overflow: "hidden", background: C.panel2 }}>
                 <div className="table-scroll" style={{ overflow: "auto", maxHeight: "calc(100vh - 260px)" }}>
@@ -603,7 +603,7 @@ export default function App() {
       {/* ══ MODAL: MOVIMENTAÇÃO WIZARD ══ */}
       {showMove && <Modal title={<><Icon name="swap" size={18} color={C.accent} /> Realizar movimentação</>} onClose={closeMove}>
         <div style={{ display: "flex", gap: 6, marginBottom: 18 }}>
-          {[["1", "Produto"], ["2", "Local"], ["3", "Responsável"]].map(([n, l], i) => {
+          {[["1", "Padrão"], ["2", "Local"], ["3", "Responsável"]].map(([n, l], i) => {
             const active = mvStep === i + 1, done = mvStep > i + 1;
             const col = done ? C.ok : active ? C.accent : C.muted2;
             return (
@@ -617,8 +617,8 @@ export default function App() {
         </div>
 
         {mvStep === 1 && <>
-          <div style={{ color: C.muted, fontSize: 12.5, marginBottom: 12, lineHeight: 1.5 }}>Escaneie o QR Code do produto ou digite o código manualmente.</div>
-          <Lbl>Código do produto *</Lbl>
+          <div style={{ color: C.muted, fontSize: 12.5, marginBottom: 12, lineHeight: 1.5 }}>Escaneie o QR Code do padrão ou digite o código manualmente.</div>
+          <Lbl>Código do padrão *</Lbl>
           <input value={mvProdInput} onChange={e => setMvProdInput(e.target.value.toUpperCase())}
             placeholder="EC001" maxLength={7} style={S.input} onKeyDown={e => e.key === "Enter" && mvStep1Next()} />
           {mvError && <Err>{mvError}</Err>}
@@ -634,7 +634,7 @@ export default function App() {
           <div style={{ background: `${C.ok}10`, border: `1px solid ${C.ok}33`, borderRadius: 10, padding: "11px 13px", marginBottom: 12, fontSize: 12.5, display: "flex", alignItems: "flex-start", gap: 8 }}>
             <Icon name="check" size={16} color={C.ok} style={{ marginTop: 2 }} />
             <div>
-              Produto: <strong style={{ color: C.accent, fontFamily: FM }}>{mvProdObj?.code}</strong>
+              Padrão: <strong style={{ color: C.accent, fontFamily: FM }}>{mvProdObj?.code}</strong>
               {mvProdObj?.name && <span style={{ color: C.muted }}> — {mvProdObj.name}</span>}
               <div style={{ color: C.muted2, fontSize: 11, marginTop: 3, fontFamily: FM }}>Local atual: {mvProdObj?.shelf}</div>
             </div>
@@ -653,7 +653,7 @@ export default function App() {
 
         {mvStep === 3 && <>
           <div style={{ background: C.panel2, border: `1px solid ${C.line}`, borderRadius: 10, padding: "13px 14px", marginBottom: 14, fontSize: 12.5 }}>
-            <div style={{ marginBottom: 8 }}>Produto: <strong style={{ color: C.accent, fontFamily: FM }}>{mvProdObj?.code}</strong>{mvProdObj?.name && <span style={{ color: C.muted }}> — {mvProdObj.name}</span>}</div>
+            <div style={{ marginBottom: 8 }}>Padrão: <strong style={{ color: C.accent, fontFamily: FM }}>{mvProdObj?.code}</strong>{mvProdObj?.name && <span style={{ color: C.muted }}> — {mvProdObj.name}</span>}</div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
               <span style={{ color: C.muted2 }}>De</span><span style={S.tag(C.loc)}>{mvProdObj?.shelf}</span>
               <Icon name="arrowR" size={15} color={C.muted2} />
@@ -685,7 +685,7 @@ export default function App() {
         <main style={{ padding: "20px 28px 40px", maxWidth: 860, margin: "0 auto" }}>
           <PageHead icon="sliders" title="Área do Administrador" onBack={() => setPage("home")} />
           <div style={{ display: "flex", gap: 6, marginBottom: 16, flexWrap: "wrap" }}>
-          {[["produtos", "Produtos", "box"], ["locais", "Locais", "pin"], ["categorias", "Categorias", "tag"], ["responsaveis", "Usuários", "user"], ["pin", "PIN", "key"]].map(([t, l, ic]) => {
+          {[["produtos", "Padrões", "box"], ["locais", "Locais", "pin"], ["categorias", "Categorias", "tag"], ["responsaveis", "Usuários", "user"], ["pin", "PIN", "key"]].map(([t, l, ic]) => {
             const on = adminTab === t;
             return (
               <button key={t} onClick={() => { setAdminTab(t); setAdminMsg(""); }}
@@ -700,7 +700,7 @@ export default function App() {
         {adminTab === "produtos" && <>
           <div style={{ background: C.panel2, border: `1px solid ${C.line}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 11, color: C.accent, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12, fontWeight: 600, fontFamily: FM }}>
-              <Icon name={apEdit ? "edit" : "plus"} size={14} />{apEdit ? "Editar produto" : "Novo produto"}
+              <Icon name={apEdit ? "edit" : "plus"} size={14} />{apEdit ? "Editar padrão" : "Novo padrão"}
             </div>
             <Lbl>Código *</Lbl>
             <input value={apCode} onChange={e => setApCode(e.target.value)} placeholder="EC001" maxLength={7} style={S.input} disabled={!!apEdit} />
@@ -717,7 +717,7 @@ export default function App() {
             </Row>
           </div>
           <div style={{ maxHeight: 380, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
-            {produtos.length === 0 && <div style={{ color: C.muted2, fontSize: 12, textAlign: "center", padding: "20px 0", fontFamily: FM }}>Nenhum produto cadastrado.</div>}
+            {produtos.length === 0 && <div style={{ color: C.muted2, fontSize: 12, textAlign: "center", padding: "20px 0", fontFamily: FM }}>Nenhum padrão cadastrado.</div>}
             {produtos.map(p => (
               <div key={p.code} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: C.panel2, border: `1px solid ${C.line}`, borderRadius: 10, padding: "9px 12px", fontSize: 12.5, gap: 8 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -768,7 +768,7 @@ export default function App() {
               <Icon name={acEdit ? "edit" : "plus"} size={14} />{acEdit ? "Editar categoria" : "Nova categoria"}
             </div>
             <Lbl>Nome da categoria *</Lbl>
-            <input value={acVal} onChange={e => setAcVal(e.target.value)} placeholder="Ex: Tubos Estruturais" style={S.input} />
+            <input value={acVal} onChange={e => setAcVal(e.target.value)} placeholder="Ex: Ultrassom" style={S.input} />
             <Row>
               {acEdit && <Btn2 onClick={() => { setAcEdit(null); setAcVal(""); }}>Cancelar</Btn2>}
               <Btn1 onClick={saveCat}><Icon name={acEdit ? "save" : "plus"} size={15} /> {acEdit ? "Salvar" : "Adicionar"}</Btn1>
